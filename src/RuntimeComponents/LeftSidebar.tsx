@@ -89,7 +89,7 @@ export function AppSidebar() {
                             className="shrink-0"
                           />
                         )}
-                        <span className="text-md ">{item.label}</span>
+                        <span className="text-md ">{  item.label}</span>
                       </a>
                     </SidebarMenuButton>
                   </SidebarMenuItem>

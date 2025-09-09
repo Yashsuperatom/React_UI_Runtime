@@ -227,6 +227,12 @@ import { ProdWebSocketClient } from "./webSocket";
 import type { ProdUIResponse } from "./webSocket";
 import MotionWrapper from "./MotionWrapper";
 import { Icon } from "@iconify/react";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
 
 interface UILogsProps {
   isActive?: boolean;
@@ -252,7 +258,6 @@ const UILogs: React.FC<UILogsProps> = ({
   requestId,
 }) => {
   const [logs, setLogs] = useState<LogItem[]>([]);
-  const [collapsed, setCollapsed] = useState(false);
   const completedRef = useRef(false);
   const wsClientRef = useRef<ProdWebSocketClient | null>(null);
 
@@ -264,10 +269,12 @@ const UILogs: React.FC<UILogsProps> = ({
 
     const startTime = Date.now();
 
-
     const log = (msg: string) => {
       const elapsed = ((Date.now() - startTime) / 1000).toFixed(2);
-      setLogs((prev) => [...prev, { message: msg, time: elapsed, realTime: startTime }]);
+      setLogs((prev) => [
+        ...prev,
+        { message: msg, time: elapsed, realTime: Date.now() },
+      ]);
     };
 
     // Initialize WebSocket client
@@ -276,30 +283,35 @@ const UILogs: React.FC<UILogsProps> = ({
 
     // Listen for UI responses
     client.onProdUIResponse((res: ProdUIResponse) => {
-
-      if (!res.data || res.data.length === 0 || res.data[0] === undefined) {
-        log(`Unable to get Data for ${res.uiId} and ${projectId}`);
-        console.log("cliks")
+      if (!res.data) {
+        log(`❌ No data received for uiId: ${res.uiId}, projectId: ${projectId}`);
+      } else if (res.data.error) {
+        log(
+          `⚠️ Error for uiId: ${res.uiId}, projectId: ${projectId} → ${res.data.error}`
+        );
       } else {
-        log(`UI received for ${res.uiId} and ${projectId}`);
+        log(
+          `✅ UI and Data received for uiId: ${res.uiId}, projectId: ${projectId}`
+        );
       }
-      
+
       if (!completedRef.current) {
         completedRef.current = true;
         onComplete?.({ ui: res.data?.ui, data: res.data?.data });
       }
     });
 
-    log(" Connecting to WebSocket...");
-    log(` Looking for UI and Data in ${projectId} and ${uiId}`);
+
+    log("🔌 Connecting to WebSocket...");
+    log(`🔍 Looking for UI and Data in projectId: ${projectId}, uiId: ${uiId}`);
 
     client.connect(uiId, requestId);
 
     return () => {
       client.disconnect();
     };
-  }, []);
-
+  }, [isActive, projectId, uiId, wsUrl, requestId, onComplete]);
+  // Remove onComplete from deps
 
   // Component to display logs with elapsed time on the right
   function UILogsDisplay({ logs }: { logs: LogItem[] }) {
@@ -314,17 +326,16 @@ const UILogs: React.FC<UILogsProps> = ({
             className="flex justify-between items-center gap-2 overflow-hidden"
           >
             <div className="flex items-center gap-2">
-              <span >{new Date(log.realTime).toLocaleTimeString()}</span>
+              <span>{new Date(log.realTime).toLocaleTimeString()}</span>
               <Icon
-                icon={log.message.includes("❌") || log.message.includes("⚠️") ? "mdi:alert-circle" : "ion:checkmark-circle"}
-                className={ log.message.includes("Unable") ? "text-red-500" : "text-green-500"}
+                icon={log.message.includes("âŒ") || log.message.includes("âš ï¸") ? "mdi:alert-circle" : "ion:checkmark-circle"}
+                className={log.message.includes("Unable") ? "text-red-500" : "text-green-500"}
                 height={18}
                 width={18}
               />
-
               <span className="text-gray-500">{log.message}</span>
             </div>
-            <span className="text-gray-700 text-sm font-semibold">{log.time}s</span>
+            <span className="text-gray-700 text-sm font-semibold">{log.time}</span>
           </MotionWrapper>
         ))}
       </div>
@@ -332,35 +343,54 @@ const UILogs: React.FC<UILogsProps> = ({
   }
 
   return (
-    <MotionWrapper className="flex flex-col w-full text-sm text-gray-700 p-4 bg-gray-50 rounded-lg border mb-4 overflow-hidden">
-      <div className="flex items-center justify-between mb-2">
-        <div className="flex items-center gap-2">
-          <Icon
-            icon={collapsed ? "mdi:chevron-down" : "mdi:chevron-up"}
-            className="text-gray-600 cursor-pointer"
-            height={20}
-            width={20}
-            onClick={() => setCollapsed((p) => !p)}
-          />
-          <span className="font-medium text-gray-800 cursor-pointer" onClick={() => setCollapsed((p) => !p)}>
-            {collapsed ? "Show Logs" : "Hide Logs"}
-          </span>
-        </div>
-        <div className="flex items-center gap-2">
-          <Icon
-            icon={completedRef.current ? "ion:checkmark-done-circle" : "eos-icons:loading"}
-            className={`${completedRef.current ? "text-green-500" : "text-indigo-500 animate-spin"}`}
-            height={16}
-            width={16}
-          />
-          <span className="font-medium text-gray-800">
-            {completedRef.current ? "UI Process Finished" : "Generating UI..."}
-          </span>
-        </div>
-      </div>
 
-      {!collapsed && <UILogsDisplay logs={logs} />}
-    </MotionWrapper>
+    <Accordion
+      type="single"
+      collapsible
+      className="w-full"
+      defaultValue="item-1"
+    >
+      <MotionWrapper className="flex flex-col w-full text-sm text-gray-700 p-4 bg-gray-50 rounded-lg border-gray-300 border mb-4 overflow-hidden">
+        <AccordionItem value="item-1">
+          <AccordionTrigger className=" cursor-pointer">
+            <div className="flex items-center gap-2">
+
+              <Icon
+                icon={completedRef.current ? "ion:checkmark-done-circle" : "eos-icons:loading"}
+                className={`${completedRef.current ? "text-green-500" : "text-indigo-500 animate-spin"}`}
+                height={16}
+                width={16}
+              />
+
+              <span className="font-medium text-gray-800">
+                {completedRef.current ? "UI Process Finished" : "Loading UI"}
+              </span>
+            </div>
+          </AccordionTrigger>
+          <AccordionContent className="flex flex-col gap-4 text-balance">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+              </div>
+
+            </div>
+            <UILogsDisplay logs={logs} />
+          </AccordionContent>
+        </AccordionItem>
+      </MotionWrapper>
+    </Accordion>
   );
 };
-export default React.memo(UILogs);
+
+// Custom comparison function to prevent unnecessary re-renders
+const arePropsEqual = (prevProps: UILogsProps, nextProps: UILogsProps) => {
+  return (
+    prevProps.isActive === nextProps.isActive &&
+    prevProps.projectId === nextProps.projectId &&
+    prevProps.uiId === nextProps.uiId &&
+    prevProps.wsUrl === nextProps.wsUrl &&
+    prevProps.requestId === nextProps.requestId
+    // Intentionally excluding onComplete from comparison
+  );
+};
+
+export default React.memo(UILogs, arePropsEqual);

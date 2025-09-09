@@ -179,7 +179,7 @@
 
 
 
-import { useState, useRef, useLayoutEffect, forwardRef, useImperativeHandle ,useCallback }from "react";
+import { useState, useRef, useLayoutEffect, forwardRef, useImperativeHandle, useCallback } from "react";
 import type { ChatMessage, ChatConfig, ChatHandlers } from "../lib/types";
 import MessageBubble from "./MessageBubble";
 import ChatInput from "./InputBox";
@@ -220,13 +220,12 @@ const ChatRuntime = forwardRef<ChatRuntimeRef, ChatRuntimeProps>(({
   const [inputHeight, setInputHeight] = useState(0);
   const [isLoadingUI, setIsLoadingUI] = useState(false);
   
-
   const HeroComponent = CustomHero || Hero;
 
   // projectid and uiid and reqid
-  const uiid = "ui_33O2Hf";
-  const projectId = "49";
-  const reqid = "546"
+  const uiid = "ui_fFxd_b";
+  const projectId = "75";
+  const reqid = "546";
 
   // Expose methods via ref
   useImperativeHandle(ref, () => ({
@@ -241,11 +240,12 @@ const ChatRuntime = forwardRef<ChatRuntimeRef, ChatRuntimeProps>(({
     if (container) container.scrollTop = container.scrollHeight;
   }, [allMessages, isLoadingUI]);
 
-  const handleOptionClick = (value: string) => setInputValue(value);
+  const handleOptionClick = useCallback((value: string) => {
+    setInputValue(value);
+  }, []);
 
-
-
-  const handleUILogsComplete = (uiData: any, logMessageId: string) => {
+  // Memoize the UI logs completion handler to prevent unnecessary re-renders
+  const handleUILogsComplete = useCallback((uiData: any, logMessageId: string) => {
     setIsLoadingUI(false);
 
     // Update the logs message to mark it as completed
@@ -271,7 +271,7 @@ const ChatRuntime = forwardRef<ChatRuntimeRef, ChatRuntimeProps>(({
         }
       };
       setAllMessages(prev => [...prev, aiMessage]);
-      console.log(uiData)
+      console.log(uiData);
       onMessageReceived?.(aiMessage);
     } else {
       const errorMessage: ChatMessage = {
@@ -281,9 +281,9 @@ const ChatRuntime = forwardRef<ChatRuntimeRef, ChatRuntimeProps>(({
       };
       setAllMessages(prev => [...prev, errorMessage]);
     }
-  };
+  }, [onMessageReceived]);
 
-  const handleSendMessage = async (messageText?: string) => {
+  const handleSendMessage = useCallback(async (messageText?: string) => {
     const text = messageText || inputValue;
     if (!text.trim()) return;
 
@@ -319,22 +319,20 @@ const ChatRuntime = forwardRef<ChatRuntimeRef, ChatRuntimeProps>(({
     };
     setAllMessages(prev => [...prev, aiMessage]);
     onMessageReceived?.(aiMessage);
-  };
+  }, [inputValue, onMessageSent, onMessageReceived]);
 
-
-  // prevent the renreder of logs
+  // Create a memoized handler for each UILogs component
   const getUILogsCompleteHandler = useCallback(
-  (msgId: string) => (uiData: any) => handleUILogsComplete(uiData, msgId),
-  []
-);
-
+    (msgId: string) => (uiData: any) => handleUILogsComplete(uiData, msgId),
+    [handleUILogsComplete]
+  );
 
   return (
     <SidebarProvider id="1">
       <AppSidebar />
       <span className="sm:block md:hidden"><SidebarTrigger /></span>
 
-      <div className={`flex flex-col w-full h-screen bg-white ${className}`}>
+      <div className={`flex flex-col w-full h-screen bg-white  ${className}`}>
         <div ref={containerRef} className="flex overflow-y-auto h-screen justify-center">
           <div className="lg:px-[5vw] px-[7vw] w-full lg:max-w-[60vw]" style={{ paddingBottom: inputHeight }}>
             {allMessages.length === 0 && !isLoadingUI && (
@@ -347,7 +345,6 @@ const ChatRuntime = forwardRef<ChatRuntimeRef, ChatRuntimeProps>(({
                 const extendedMsg = msg as ChatMessage & { active?: boolean; completed?: boolean };
                 const isActive = extendedMsg.active === true && !extendedMsg.completed;
 
-                
                 return (
                   <div key={msg.id} className="mb-4">
                     <UILogs
@@ -356,7 +353,7 @@ const ChatRuntime = forwardRef<ChatRuntimeRef, ChatRuntimeProps>(({
                       projectId={projectId}
                       uiId={uiid}
                       wsUrl="wss://user-websocket.ashish-91e.workers.dev/websocket"
-                      onComplete={ getUILogsCompleteHandler(msg.id)}
+                      onComplete={getUILogsCompleteHandler(msg.id)}
                     />
                   </div>
                 );
@@ -370,6 +367,7 @@ const ChatRuntime = forwardRef<ChatRuntimeRef, ChatRuntimeProps>(({
                   currentSchema={msg.schema}
                   schemaData={msg.schema}
                   handlers={handlers}
+                  
                 />
               );
             })}
