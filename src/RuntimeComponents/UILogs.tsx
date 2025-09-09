@@ -278,11 +278,12 @@ const UILogs: React.FC<UILogsProps> = ({
     client.onProdUIResponse((res: ProdUIResponse) => {
 
       if (!res.data || res.data.length === 0 || res.data[0] === undefined) {
-        log(`Unable to get Data received for ${res.uiId} and ${projectId}`);
+        log(`Unable to get Data for ${res.uiId} and ${projectId}`);
+        console.log("cliks")
       } else {
         log(`UI received for ${res.uiId} and ${projectId}`);
       }
-
+      
       if (!completedRef.current) {
         completedRef.current = true;
         onComplete?.({ ui: res.data?.ui, data: res.data?.data });
@@ -297,7 +298,7 @@ const UILogs: React.FC<UILogsProps> = ({
     return () => {
       client.disconnect();
     };
-  }, [isActive, projectId, uiId, wsUrl, requestId, onComplete]);
+  }, []);
 
 
   // Component to display logs with elapsed time on the right

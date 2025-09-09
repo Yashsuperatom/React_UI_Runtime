@@ -179,7 +179,7 @@
 
 
 
-import { useState, useRef, useLayoutEffect, forwardRef, useImperativeHandle ,useCallback    }   from "react";
+import { useState, useRef, useLayoutEffect, forwardRef, useImperativeHandle ,useCallback }from "react";
 import type { ChatMessage, ChatConfig, ChatHandlers } from "../lib/types";
 import MessageBubble from "./MessageBubble";
 import ChatInput from "./InputBox";

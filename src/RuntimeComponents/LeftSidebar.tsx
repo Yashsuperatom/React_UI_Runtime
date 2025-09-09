@@ -35,7 +35,7 @@ export function AppSidebar() {
   return (
     <Sidebar
       collapsible="icon"
-      className="border-r border-gray-200 dark:bg-gray-900 dark:border-gray-700 bg-[#f7fbfc] "
+      className="border-r border-gray-200 dark:bg-gray-900 dark:border-gray-700  bg-[#f7fbfc] "
     >
 
       <SidebarContent>
@@ -54,7 +54,7 @@ export function AppSidebar() {
               )}
             
             </MotionWrapper>
-            <SidebarTrigger className="hover:bg-transparent focus-visible:ring-0 cursor-pointer z-10 " />
+            <SidebarTrigger className="hover:bg-transparent focus-visible:ring-0 cursor-pointer z-10 dark:text-white " />
           </SidebarGroupLabel>
 
           <SidebarGroupContent>
@@ -72,7 +72,7 @@ export function AppSidebar() {
                       ${
                         activeItem === item.href
                           ? "bg-white shadow-md rounded-md justify-center py-1"
-                          : "text-gray-700 py-1 hover:bg-white rounded-md"
+                          : "text-gray-700  dark:text-white dark:hover:text-black py-1 hover:bg-white rounded-md"
                       }
                     `}
                   >
@@ -89,7 +89,7 @@ export function AppSidebar() {
                             className="shrink-0"
                           />
                         )}
-                        <span className="text-md">{item.label}</span>
+                        <span className="text-md ">{item.label}</span>
                       </a>
                     </SidebarMenuButton>
                   </SidebarMenuItem>

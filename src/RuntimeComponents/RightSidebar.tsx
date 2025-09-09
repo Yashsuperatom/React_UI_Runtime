@@ -50,7 +50,7 @@ export function ProjectSidebar() {
         <SidebarContent>
           <SidebarGroup>
             <div className="flex items-center justify-between">
-              <SidebarTrigger className="hover:bg-transparent focus-visible:ring-0 cursor-pointer z-10  " />
+              <SidebarTrigger className="hover:bg-transparent focus-visible:ring-0 cursor-pointer z-10 dark:text-white  " />
             <SidebarGroupLabel className="flex items-center p-4 h-20">
               
                 <div className="flex items-center gap-2 text-xl font-semibold text-gray-500 dark:text-gray-400 ">
@@ -70,7 +70,7 @@ export function ProjectSidebar() {
                       transition-colors duration-200
                     ${activeItem === item.href
                       ? "bg-white shadow-md rounded-md  justify-center py-2 "
-                      : "text-gray-700 p-1 hover:bg-white rounded-md "
+                      : "text-gray-700  dark:text-white dark:hover:text-black py-1 hover:bg-white rounded-md "
                     }
                     `}
                     >
