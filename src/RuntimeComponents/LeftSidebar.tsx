@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import {
   Sidebar,
   SidebarContent,
@@ -16,7 +16,24 @@ import MotionWrapper from "@/RuntimeComponents/MotionWrapper";
 
 export function AppSidebar() {
   const [activeItem, setActiveItem] = useState("/");
-  const { state } = useSidebar();
+ const { state, toggleSidebar, open } = useSidebar(); 
+
+
+
+   useEffect(() => {
+    const saved = localStorage.getItem("sidebar-state");
+    if (saved === "expanded" && state === "collapsed") {
+      open;
+    }
+    if (saved === "collapsed" && state === "expanded") {
+      toggleSidebar(); // force collapse
+    }
+  }, []);
+
+  // Save whenever state changes
+  useEffect(() => {
+    localStorage.setItem("sidebar1", state);
+  }, [state]);
 
   const sidebarItems = [
     { label: "Projects", icon: "mdi:folder", href: "/" },

@@ -60,14 +60,14 @@ export default function MessageBubble({
       >
         <div className="w-fit">
           {message.schema ? (
-            <div className="py-4 overflow-auto max-w-[40vw] mx-4 w-fit group relative ">
+            <div className="py-4 overflow-auto max-w-[40vw] mx-4 w-fit  relative group ">
               {/* Fullscreen Icon */}
           
                <Icon
                 icon="mingcute:fullscreen-2-line"
-                height={30}
-                width={30}
-                className="text-gray-400 opacity-0 group-hover:opacity-100 cursor-pointer absolute top-2 right-0 z-10"
+                height={0}
+                width={20}
+                className="text-gray-400 hover:text-gray-600  opacity-0 group-hover:opacity-100 cursor-pointer absolute top-2 right-0 z-20 hover:scale-105 "
                 onClick={() => handleFullscreen(`box-${message.id}`)}
               />
               <span className="bg-white overflow-auto" id={`box-${message.id}`}>

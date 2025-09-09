@@ -11,7 +11,7 @@ function getTimestamp() {
 }
 
 export async function getUI(projectId: string, uuid: string): Promise<ApiResponse> {
-  const url = "https://superatom-ai-api-l8gm.vercel.app/api/runtime/prod/get_ui";
+  const url = import.meta.env.VITE_PROD_API;
 
   console.log(`[${getTimestamp()}]  Sending API request`, { projectId, uuid });
 

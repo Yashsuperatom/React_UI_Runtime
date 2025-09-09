@@ -223,9 +223,13 @@ const ChatRuntime = forwardRef<ChatRuntimeRef, ChatRuntimeProps>(({
   const HeroComponent = CustomHero || Hero;
 
   // projectid and uiid and reqid
-  const uiid = "ui_fFxd_b";
-  const projectId = "75";
-  const reqid = "546";
+  const uiid = import.meta.env.VITE_UIID;
+  const projectId = import.meta.env.VITE_projectID;
+  const reqid = import.meta.env.VITE_reqID;
+  const wsUrl = import.meta.env.VITE_WEBSOCKET_URL;
+;
+
+
 
   // Expose methods via ref
   useImperativeHandle(ref, () => ({
@@ -328,7 +332,7 @@ const ChatRuntime = forwardRef<ChatRuntimeRef, ChatRuntimeProps>(({
   );
 
   return (
-    <SidebarProvider id="1">
+    <SidebarProvider >
       <AppSidebar />
       <span className="sm:block md:hidden"><SidebarTrigger /></span>
 
@@ -352,7 +356,7 @@ const ChatRuntime = forwardRef<ChatRuntimeRef, ChatRuntimeProps>(({
                       isActive={isActive}
                       projectId={projectId}
                       uiId={uiid}
-                      wsUrl="wss://user-websocket.ashish-91e.workers.dev/websocket"
+                      wsUrl = {wsUrl}
                       onComplete={getUILogsCompleteHandler(msg.id)}
                     />
                   </div>

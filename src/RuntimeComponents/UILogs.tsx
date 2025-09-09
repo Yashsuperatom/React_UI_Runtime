@@ -302,7 +302,6 @@ const UILogs: React.FC<UILogsProps> = ({
     });
 
 
-    log("🔌 Connecting to WebSocket...");
     log(`🔍 Looking for UI and Data in projectId: ${projectId}, uiId: ${uiId}`);
 
     client.connect(uiId, requestId);
