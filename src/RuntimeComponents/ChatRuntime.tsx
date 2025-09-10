@@ -46,7 +46,7 @@ const ChatRuntime = forwardRef<ChatRuntimeRef, ChatRuntimeProps>(({
   // for sidebar
   const savedRightSidebarState = localStorage.getItem("sidebar-rightSidebar");
   const [rightSidebarOpen, setRightSidebarOpen] = useState(savedRightSidebarState !== "collapsed");
-  const [leftSidebarOpen, setLeftSidebarOpen] = useState(savedRightSidebarState !== "collapsed");
+  // const [leftSidebarOpen, setLeftSidebarOpen] = useState(savedRightSidebarState !== "collapsed");
 
   // Save to localStorage whenever state changes
   useEffect(() => {
@@ -214,15 +214,9 @@ const ChatRuntime = forwardRef<ChatRuntimeRef, ChatRuntimeProps>(({
   );
 
   return (
-<<<<<<< HEAD
-    <SidebarProvider  >
-      <AppSidebar />
-      <span className="sm:block md:hidden"><SidebarTrigger /></span>
-=======
     <SidebarProvider id="leftSidebar" defaultOpen={rightSidebarOpen}>
       <AppSidebar onToggle={() => setRightSidebarOpen(prev => !prev)} />
       <span className="sm:block md:hidden"><SidebarTrigger onToggle={() => setRightSidebarOpen(prev => !prev)} /></span>
->>>>>>> dev
 
       <div className={`flex flex-col w-full h-screen bg-white  ${className}`}>
         <div ref={containerRef} className="flex overflow-y-auto h-screen justify-center">

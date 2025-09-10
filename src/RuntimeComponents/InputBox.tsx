@@ -1,10 +1,6 @@
 import {  useRef, useEffect } from "react";
 import { Icon } from "@iconify/react";
 import MotionWrapper from "./MotionWrapper";
-<<<<<<< HEAD
-=======
-
->>>>>>> dev
 interface ChatInputProps {
   value: string;
   onChange: (value: string) => void;
