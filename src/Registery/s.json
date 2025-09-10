@@ -1,0 +1,94 @@
+{
+  "ui": {
+    "type": "div",
+    "props": {
+      "class": ["dashboard", "flex", "flex-col", "min-h-screen"],
+      "style": {
+        "backgroundColor": { "$exp": "state.theme === 'dark' ? '#0f172a' : '#f8fafc'" },
+        "color": { "$exp": "state.theme === 'dark' ? '#f8fafc' : '#0f172a'" }
+      }
+    },
+    "children": [
+      {
+        "type": "header",
+        "props": {
+          "class": ["flex", "items-center", "justify-between", "p-4", "shadow-md"],
+          "style": { "backgroundColor": { "$exp": "state.theme === 'dark' ? '#1e293b' : '#ffffff'" } }
+        },
+        "children": [
+          {
+            "type": "h1",
+            "props": { "class": "font-bold text-xl" },
+            "children": "📊 {{state.company.name}} Dashboard"
+          },
+          {
+            "type": "button",
+            "props": {
+              "onClick": { "$exp": "methods.toggleTheme" },
+              "class": "px-3 py-1 rounded bg-blue-600 text-white hover:bg-blue-700"
+            },
+            "children": { "$exp": "state.theme === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode'" }
+          }
+        ]
+      },
+      {
+        "type": "main",
+        "props": { "class": ["flex", "flex-1"] },
+        "children": [
+          {
+            "type": "section",
+            "props": { "class": "flex-1 p-6 space-y-6" },
+            "children": [
+              {
+                "type": "div",
+                "props": { "class": "grid grid-cols-1 md:grid-cols-3 gap-4" },
+                "children": [
+                  {
+                    "type": "Card",
+                    "props": { "title": "Revenue", "value": "{{state.metrics.revenue}}", "trend": "{{state.metrics.revenueGrowth}}" }
+                  }
+                ]
+              },
+              {
+                "type": "div",
+                "props": { "class": "mt-6" },
+                "children": [
+                  { "type": "h2", "props": { "class": "text-lg font-bold mb-2" }, "children": "📈 Revenue Overview" },
+                  {
+                    "type": "Chart",
+                    "props": {
+                      "data": { "$bind": "state.charts.revenue" },
+                      "xKey": "month",
+                      "yKey": "value",
+                      "color": { "$exp": "state.theme === 'dark' ? '#38bdf8' : '#0ea5e9'" }
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "data": {
+    "state": {
+      "theme": "dark",
+      "company": { "name": "Acme Corp" },
+      "metrics": {
+        "revenue": "$12.3M",
+        "revenueGrowth": "+5%"
+      },
+      "charts": {
+        "revenue": [
+          { "month": "Jan", "value": 1200 },
+          { "month": "Feb", "value": 1500 },
+          { "month": "Mar", "value": 1700 }
+        ]
+      }
+    },
+    "methods": {
+      "toggleTheme": "() => console.log('Theme toggled')"
+    }
+  }
+}

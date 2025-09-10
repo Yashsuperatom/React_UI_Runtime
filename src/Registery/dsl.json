@@ -1,0 +1,161 @@
+{
+  "ui": {
+    "type": "div",
+    "props": {
+      "class": ["dashboard", "flex", "flex-col", "min-h-screen"],
+      "style": {
+        "backgroundColor": { "$exp": "state.theme === 'dark' ? '#0f172a' : '#f8fafc'" },
+        "color": { "$exp": "state.theme === 'dark' ? '#f8fafc' : '#0f172a'" }
+      }
+    },
+    "children": [
+      {
+        "type": "header",
+        "props": {
+          "class": ["flex", "items-center", "justify-between", "p-4", "shadow-md"],
+          "style": { "backgroundColor": { "$exp": "state.theme === 'dark' ? '#1e293b' : '#ffffff'" } }
+        },
+        "children": [
+          {
+            "type": "h1",
+            "props": { "class": "font-bold text-xl" },
+            "children": "📊 {{state.company.name}} Dashboard"
+          },
+          {
+            "type": "button",
+            "props": {
+              "onClick": { "$exp": "methods.toggleTheme" },
+              "class": "px-3 py-1 rounded bg-blue-600 text-white hover:bg-blue-700"
+            },
+            "children": { "$exp": "state.theme === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode'" }
+          }
+        ]
+      },
+      {
+        "type": "main",
+        "props": { "class": ["flex", "flex-1"] },
+        "children": [
+          {
+            "type": "aside",
+            "props": { "class": "w-64 border-r p-4 hidden md:block" },
+            "children": [
+              {
+                "type": "nav",
+                "children": [
+                  { "type": "p", "props": { "class": "font-semibold mb-2" }, "children": "Navigation" },
+                  { "type": "button", "props": { "class": "block w-full text-left py-2 px-3 hover:bg-gray-200" }, "children": "🏠 Home" },
+                  { "type": "button", "props": { "class": "block w-full text-left py-2 px-3 hover:bg-gray-200" }, "children": "📦 Products" },
+                  { "type": "button", "props": { "class": "block w-full text-left py-2 px-3 hover:bg-gray-200" }, "children": "👥 Customers" },
+                  { "type": "button", "props": { "class": "block w-full text-left py-2 px-3 hover:bg-gray-200" }, "children": "⚙️ Settings" }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "section",
+            "props": { "class": "flex-1 p-6 space-y-6" },
+            "children": [
+              {
+                "type": "div",
+                "props": { "class": "grid grid-cols-1 md:grid-cols-3 gap-4" },
+                "children": [
+                  {
+                    "type": "Card",
+                    "props": { "title": "Revenue", "value": "{{state.metrics.revenue}}", "trend": "{{state.metrics.revenueGrowth}}" }
+                  },
+                  {
+                    "type": "Card",
+                    "props": { "title": "Active Users", "value": "{{state.metrics.activeUsers}}", "trend": "{{state.metrics.userGrowth}}" }
+                  },
+                  {
+                    "type": "Card",
+                    "props": { "title": "New Orders", "value": "{{state.metrics.newOrders}}", "trend": "{{state.metrics.orderGrowth}}" }
+                  }
+                ]
+              },
+              {
+                "type": "div",
+                "props": { "class": "mt-6" },
+                "children": [
+                  { "type": "h2", "props": { "class": "text-lg font-bold mb-2" }, "children": "📈 Revenue Overview" },
+                  {
+                    "type": "Chart",
+                    "props": {
+                      "data": { "$bind": "state.charts.revenue" },
+                      "xKey": "month",
+                      "yKey": "value",
+                      "color": { "$exp": "state.theme === 'dark' ? '#38bdf8' : '#0ea5e9'" }
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "div",
+                "props": { "class": "mt-6" },
+                "children": [
+                  { "type": "h2", "props": { "class": "text-lg font-bold mb-2" }, "children": "👥 Team Members" },
+                  {
+                    "type": "div",
+                    "props": { "class": "space-y-2" },
+                    "children": {
+                      "for": {
+                        "in": { "$bind": "state.team" },
+                        "as": "member",
+                        "key": "member.id"
+                      },
+                      "children": {
+                        "type": "div",
+                        "props": { "class": "flex items-center justify-between p-2 border rounded" },
+                        "children": [
+                          { "type": "span", "children": "{{member.name}} ({{member.role}})" },
+                          { "type": "span", "children": "📧 {{member.email}}" }
+                        ]
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "footer",
+        "props": { "class": "p-4 text-center border-t text-sm text-gray-500" },
+        "children": "© {{state.company.name}} {{state.currentYear}}. All rights reserved."
+      }
+    ]
+  },
+  "data": {
+    "state": {
+      "theme": "dark",
+      "company": { "name": "Acme Corp" },
+      "metrics": {
+        "revenue": "$12.3M",
+        "revenueGrowth": "+5%",
+        "activeUsers": "42,000",
+        "userGrowth": "+12%",
+        "newOrders": "1,234",
+        "orderGrowth": "+8%"
+      },
+      "charts": {
+        "revenue": [
+          { "month": "Jan", "value": 1200 },
+          { "month": "Feb", "value": 1500 },
+          { "month": "Mar", "value": 1700 }
+        ]
+      },
+      "team": [
+        { "id": 1, "name": "Alice", "role": "CEO", "email": "alice@acme.com" },
+        { "id": 2, "name": "Bob", "role": "CTO", "email": "bob@acme.com" },
+        { "id": 3, "name": "Charlie", "role": "CFO", "email": "charlie@acme.com" }
+      ],
+      "currentYear": 2025
+    },
+    "methods": {
+      "toggleTheme": "() => console.log('Theme toggled')"
+    }
+  }
+}
+
+

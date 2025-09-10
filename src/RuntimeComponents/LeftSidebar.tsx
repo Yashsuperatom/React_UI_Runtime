@@ -1,4 +1,6 @@
-import { useState,useEffect } from "react";
+
+
+import { useState } from "react";
 import {
   Sidebar,
   SidebarContent,
@@ -14,26 +16,13 @@ import {
 import { Icon } from "@iconify/react";
 import MotionWrapper from "@/RuntimeComponents/MotionWrapper";
 
-export function AppSidebar() {
+export function AppSidebar({  onToggle }: any) {
+
+
+  
   const [activeItem, setActiveItem] = useState("/");
- const { state, toggleSidebar, open } = useSidebar(); 
 
-
-
-   useEffect(() => {
-    const saved = localStorage.getItem("sidebar-state");
-    if (saved === "expanded" && state === "collapsed") {
-      open;
-    }
-    if (saved === "collapsed" && state === "expanded") {
-      toggleSidebar(); // force collapse
-    }
-  }, []);
-
-  // Save whenever state changes
-  useEffect(() => {
-    localStorage.setItem("sidebar1", state);
-  }, [state]);
+  const {state} = useSidebar();
 
   const sidebarItems = [
     { label: "Projects", icon: "mdi:folder", href: "/" },
@@ -50,72 +39,72 @@ export function AppSidebar() {
   };
 
   return (
-    <Sidebar
-      collapsible="icon"
-      className="border-r border-gray-200 dark:bg-gray-900 dark:border-gray-700  bg-[#f7fbfc] "
-    >
 
-      <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupLabel
-            className={`flex items-center p-4 h-20 border-b-2 border-gray-500 rounded-none mb-4 ${
-              state === "expanded" ? "justify-between" : "justify-center"
-            }`}
-          >
-            <MotionWrapper from="top">
-              {state === "expanded" && (
-                <div className="flex items-center gap-2 text-xl font-semibold text-gray-500 dark:text-gray-400">
-                  <Icon icon="qlementine-icons:stars-16" />
-                  Navigation
-                </div>
-              )}
-            
-            </MotionWrapper>
-            <SidebarTrigger className="hover:bg-transparent focus-visible:ring-0 cursor-pointer z-10 dark:text-white " />
-          </SidebarGroupLabel>
+      <Sidebar 
 
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {sidebarItems.map((item, index) => (
-                <MotionWrapper
-                  key={item.label}
-                  from="left"
-                  delay={index * 0.05} // staggered animation
-                >
-                  <SidebarMenuItem
-                    onClick={() => handleNavigation(item.href)}
-                    className={`
+        collapsible="icon"
+        className="border-r border-gray-200 dark:bg-gray-900 dark:border-gray-700  bg-[#f7fbfc] "
+      >
+
+        <SidebarContent>
+          <SidebarGroup>
+            <SidebarGroupLabel
+              className={`flex items-center p-4 h-20 border-b-2 border-gray-500 rounded-none mb-4 ${state === "expanded" ? "justify-between" : "justify-center"
+                }`}
+            >
+              <MotionWrapper from="top">
+                {state === "expanded" && (
+                  <div className="flex items-center gap-2 text-xl font-semibold text-gray-500 dark:text-gray-400">
+                    <Icon icon="qlementine-icons:stars-16" />
+                    Navigation
+                  </div>
+                )}
+
+              </MotionWrapper>
+              <SidebarTrigger onClick={onToggle} className="hover:bg-transparent focus-visible:ring-0 cursor-pointer z-10 dark:text-white " />
+            </SidebarGroupLabel>
+
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {sidebarItems.map((item, index) => (
+                  <MotionWrapper
+                    key={item.label}
+                    from="left"
+                    delay={index * 0.05} // staggered animation
+                  >
+                    <SidebarMenuItem
+                      onClick={() => handleNavigation(item.href)}
+                      className={`
                       transition-colors duration-200
-                      ${
-                        activeItem === item.href
+                      ${activeItem === item.href
                           ? "bg-white shadow-md rounded-md justify-center py-1"
                           : "text-gray-700  dark:text-white dark:hover:text-black py-1 hover:bg-white rounded-md"
-                      }
-                    `}
-                  >
-                    <SidebarMenuButton className="hover:bg-white focus:bg-white" asChild>
-                      <a
-                        href={item.href}
-                        className="flex items-center space-x-3 w-full text-left rounded-md"
-                      >
-                        {item.icon && (
-                          <Icon
-                            icon={item.icon}
-                            width={22}
-                            height={22}
-                            className="shrink-0"
-                          />
-                        )}
-                        <span className="text-md ">{  item.label}</span>
-                      </a>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                </MotionWrapper>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-      </SidebarContent>
-    </Sidebar>
+                        }
+                      `}
+                    >
+                      <SidebarMenuButton className="hover:bg-white focus:bg-white" asChild>
+                        <a
+                          href={item.href}
+                          className="flex items-center space-x-3 w-full text-left rounded-md"
+                        >
+                          {item.icon && (
+                            <Icon
+                              icon={item.icon}
+                              width={22}
+                              height={22}
+                              className="shrink-0"
+                            />
+                          )}
+                          <span className="text-md ">{item.label}</span>
+                        </a>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  </MotionWrapper>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        </SidebarContent>
+      </Sidebar>
   );
 }

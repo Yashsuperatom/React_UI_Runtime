@@ -1,6 +1,10 @@
 import {  useRef, useEffect } from "react";
 import { Icon } from "@iconify/react";
 import MotionWrapper from "./MotionWrapper";
+<<<<<<< HEAD
+=======
+
+>>>>>>> dev
 interface ChatInputProps {
   value: string;
   onChange: (value: string) => void;
@@ -21,7 +25,7 @@ export default function ChatInput({
   onSend,
   onHeightChange,
   placeholder = "Say something...",
-  maxLength = 3000,
+  // maxLength = 3000,
   disabled = false,
   enableVoice = true,
   enableAttachments = true,
@@ -71,7 +75,7 @@ export default function ChatInput({
                   }}
                   rows={1}
                   className="flex-grow w-full max-h-32 sm:max-h-24 resize-none overflow-y-auto focus:outline-none text-sm sm:text-base"
-                  maxLength={maxLength}
+                  // maxLength={maxLength}
                   disabled={disabled}
                 />
                 <button
@@ -114,7 +118,7 @@ export default function ChatInput({
                   )}
                 </div>
                 <div className="text-gray-400 font-medium text-xs sm:text-sm whitespace-nowrap">
-                  {value.length} / {maxLength}
+                  {/* {value.length} / {maxLength} */}
                 </div>
               </div>
             </div>
