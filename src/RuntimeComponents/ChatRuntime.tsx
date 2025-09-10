@@ -1,193 +1,14 @@
-// import { useState, useRef, useLayoutEffect, forwardRef, useImperativeHandle} from "react";
-// import type { ChatMessage, ChatConfig, ChatHandlers } from "../lib/types";
-// import MessageBubble from "./MessageBubble";
-// import ChatInput from "./InputBox";
-// import Hero from "./Hero";
-// import UILogs from "./UILogs";
-// import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-// import { AppSidebar } from "./LeftSidebar";
-// import { ProjectSidebar } from "./RightSidebar";
-
-// export interface ChatRuntimeRef {
-//   sendMessage: (message: string) => void;
-//   clearMessages: () => void;
-//   getMessages: () => ChatMessage[];
-// }
-
-// interface ChatRuntimeProps {
-//   config?: ChatConfig;
-//   handlers?: ChatHandlers;
-//   onMessageSent?: (message: string) => void;
-//   onMessageReceived?: (message: ChatMessage) => void;
-//   className?: string;
-//   heroComponent?: React.ComponentType<{ onOptionClick: (value: string) => void }>;
-// }
-
-// const ChatRuntime = forwardRef<ChatRuntimeRef, ChatRuntimeProps>(({
-//   config = {},
-//   handlers = {},
-//   onMessageSent,
-//   onMessageReceived,
-//   className = "",
-//   heroComponent: CustomHero
-// }, ref) => {
-//   const { placeholder = "Say something...", maxLength = 3000 } = config;
-
-//   const [inputValue, setInputValue] = useState("");
-//   const [allMessages, setAllMessages] = useState<ChatMessage[]>([]);
-//   const containerRef = useRef<HTMLDivElement>(null);
-//   const [inputHeight, setInputHeight] = useState(0);
-//   const [isLoadingUI, setIsLoadingUI] = useState(false);
-
-//   const HeroComponent = CustomHero || Hero;
-
-//   // projectid and uiid
-//   const uiid = "ui_33O2Hf"
-//   const projectId = "47"
-
-//   // Expose methods via ref
-//   useImperativeHandle(ref, () => ({
-//     sendMessage: (message: string) => handleSendMessage(message),
-//     clearMessages: () => setAllMessages([]),
-//     getMessages: () => allMessages
-//   }));
-
-//   // Auto-scroll
-//   useLayoutEffect(() => {
-//     const container = containerRef.current;
-//     if (container) container.scrollTop = container.scrollHeight;
-//   }, [allMessages, isLoadingUI]);
-
-//   const handleOptionClick = (value: string) => setInputValue(value);
-
-//   const handleUILogsComplete = (uiData: any) => {
-//     setIsLoadingUI(false);
-    
-//     if (uiData) {
-//       // Success - create AI message with UI
-//       const aiMessage: ChatMessage = {
-//         id: `ai-${Date.now()}`,
-//         role: "assistant",
-//         parts: [{ type: "text", text: "Here's your UI:" }],
-//         schema: {
-//           ui: uiData.ui,
-//           data: uiData.data
-//         }
-//       };
-//       setAllMessages(prev => [...prev, aiMessage]);
-//       onMessageReceived?.(aiMessage);
-//     } else {
-//       // Error - create error message
-//       const errorMessage: ChatMessage = {
-//         id: `ai-${Date.now()}`,
-//         role: "assistant",
-//         parts: [{ type: "text", text: "⚠️ Failed to fetch UI. Please try again." }]
-//       };
-//       setAllMessages(prev => [...prev, errorMessage]);
-//     }
-//   };
-
-//   const handleSendMessage = async (messageText?: string) => {
-//     const text = messageText || inputValue;
-//     if (!text.trim()) return;
-
-//     const userMessage: ChatMessage = {
-//       id: `user-${Date.now()}`,
-//       role: "user",
-//       parts: [{ type: "text", text }]
-//     };
-//     setAllMessages(prev => [...prev, userMessage]);
-//     setInputValue("");
-//     onMessageSent?.(text);
-
-//     // If user wants UI
-//     if (text.toLowerCase().includes("ui")) {
-//       setIsLoadingUI(true);
-//       return; // UILogs component will handle the API call and callback
-//     }
-
-//     // Default AI response
-//     const aiMessage: ChatMessage = {
-//       id: `ai-${Date.now()}`,
-//       role: "assistant",
-//       parts: [{ type: "text", text: "I am here to help you." }]
-//     };
-//     setAllMessages(prev => [...prev, aiMessage]);
-//     onMessageReceived?.(aiMessage);
-//   };
-
-//   return (
-//     <SidebarProvider id="1">
-//       <AppSidebar />
-//       <span className="sm:block md:hidden"><SidebarTrigger /></span>
-
-//       <div className={`flex flex-col w-full h-screen bg-white ${className}`}>
-//         <div ref={containerRef} className="flex overflow-y-auto h-screen justify-center">
-//           <div className="lg:px-[5vw] px-[7vw] w-full lg:max-w-[60vw]" style={{ paddingBottom: inputHeight }}>
-//             {allMessages.length === 0 && !isLoadingUI && <HeroComponent onOptionClick={handleOptionClick} />}
-
-//             {allMessages.map((msg) => (
-//               <MessageBubble
-//                 key={msg.id}
-//                 message={msg}
-//                 isStreaming={false}
-//                 currentSchema={msg.schema}
-//                 schemaData={msg.schema}
-//                 handlers={handlers}
-//               />
-//             ))}
-
-//             {/* Show UI Logs when loading */}
-//             {isLoadingUI && (
-//               <UILogs
-//                 isActive={isLoadingUI}
-//                 onComplete={handleUILogsComplete}
-//                 projectId={projectId}
-//                 uiId={uiid}
-//               />
-//             )}
-
-//             {allMessages.length > 0 && <div className="lg:h-[25vh] sm:h-[70vh]" />}
-//           </div>
-//         </div>
-
-//         <ChatInput
-//           value={inputValue}
-//           onChange={setInputValue}
-//           onSend={() => handleSendMessage()}
-//           onHeightChange={setInputHeight}
-//           placeholder={placeholder}
-//           maxLength={maxLength}
-//           disabled={isLoadingUI}
-//           enableVoice={false}
-//           enableAttachments={false}
-//           enablePrompts={false}
-//           modelName="Local AI"
-//         />
-//       </div>
-
-//       <ProjectSidebar />
-//     </SidebarProvider>
-//   );
-// });
-
-// ChatRuntime.displayName = "ChatRuntime";
-
-// export default ChatRuntime;
-
-
-
-
-
-import { useState, useRef, useLayoutEffect, forwardRef, useImperativeHandle, useCallback } from "react";
+import { useState, useRef, useLayoutEffect, forwardRef, useImperativeHandle, useCallback, useEffect } from "react";
 import type { ChatMessage, ChatConfig, ChatHandlers } from "../lib/types";
 import MessageBubble from "./MessageBubble";
 import ChatInput from "./InputBox";
 import Hero from "./Hero";
 import UILogs from "./UILogs";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarProvider, SidebarTrigger, } from "@/components/ui/sidebar";
 import { AppSidebar } from "./LeftSidebar";
 import { ProjectSidebar } from "./RightSidebar";
+import datas from "@/Registery/dsl.json"
+import { useParams } from "react-router-dom";
 
 export interface ChatRuntimeRef {
   sendMessage: (message: string) => void;
@@ -212,22 +33,37 @@ const ChatRuntime = forwardRef<ChatRuntimeRef, ChatRuntimeProps>(({
   className = "",
   heroComponent: CustomHero
 }, ref) => {
-  const { placeholder = "Say something...", maxLength = 3000 } = config;
+  const { placeholder = "Say something..." } = config;
 
   const [inputValue, setInputValue] = useState("");
   const [allMessages, setAllMessages] = useState<ChatMessage[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
   const [inputHeight, setInputHeight] = useState(0);
   const [isLoadingUI, setIsLoadingUI] = useState(false);
-  
+
+
+
+  // for sidebar
+  const savedRightSidebarState = localStorage.getItem("sidebar-rightSidebar");
+  const [rightSidebarOpen, setRightSidebarOpen] = useState(savedRightSidebarState !== "collapsed");
+  const [leftSidebarOpen, setLeftSidebarOpen] = useState(savedRightSidebarState !== "collapsed");
+
+  // Save to localStorage whenever state changes
+  useEffect(() => {
+      localStorage.setItem("sidebar-rightSidebar", rightSidebarOpen ? "expanded" : "collapsed");
+  }, [rightSidebarOpen]);
+
+
   const HeroComponent = CustomHero || Hero;
 
-  // projectid and uiid and reqid
-  const uiid = import.meta.env.VITE_UIID;
-  const projectId = import.meta.env.VITE_projectID;
+
+
+  const params = useParams<{ projectId?: string; uiid?: string }>();
+
+  const projectId = params.projectId || import.meta.env.VITE_projectID;
+  const uiid = params.uiid || import.meta.env.VITE_UIID;
   const reqid = import.meta.env.VITE_reqID;
   const wsUrl = import.meta.env.VITE_WEBSOCKET_URL;
-;
 
 
 
@@ -253,9 +89,9 @@ const ChatRuntime = forwardRef<ChatRuntimeRef, ChatRuntimeProps>(({
     setIsLoadingUI(false);
 
     // Update the logs message to mark it as completed
-    setAllMessages(prev => 
-      prev.map(msg => 
-        msg.id === logMessageId 
+    setAllMessages(prev =>
+      prev.map(msg =>
+        msg.id === logMessageId
           ? { ...msg, completed: true } as ChatMessage & { completed?: boolean }
           : msg
       )
@@ -273,6 +109,7 @@ const ChatRuntime = forwardRef<ChatRuntimeRef, ChatRuntimeProps>(({
           ui: uiData.ui,
           data: projectData
         }
+
       };
       setAllMessages(prev => [...prev, aiMessage]);
       console.log(uiData);
@@ -287,6 +124,9 @@ const ChatRuntime = forwardRef<ChatRuntimeRef, ChatRuntimeProps>(({
     }
   }, [onMessageReceived]);
 
+
+  // control the input
+
   const handleSendMessage = useCallback(async (messageText?: string) => {
     const text = messageText || inputValue;
     if (!text.trim()) return;
@@ -300,29 +140,71 @@ const ChatRuntime = forwardRef<ChatRuntimeRef, ChatRuntimeProps>(({
     setInputValue("");
     onMessageSent?.(text);
 
-    // If user wants UI
-    if (text.toLowerCase().includes("ui")) {
-      const logMessageId = `uilog-${Date.now()}`;
-      const logMessage: ChatMessage & { active?: boolean; completed?: boolean } = {
-        id: logMessageId,
-        role: "system",
-        parts: [{ type: "text", text: "Generating UI..." }],
-        active: true,
-        completed: false
-      };
-      setAllMessages(prev => [...prev, logMessage]);
-      setIsLoadingUI(true);
-      return;
+    if (inputValue.trim().startsWith("{") || inputValue.trim().startsWith("[")) {
+      try {
+        const parsed = JSON.parse(text)
+        if (parsed.ui && parsed.data) {
+          const logMessageId = `uilog-${Date.now()}`;
+          const logMessage: ChatMessage & {} = {
+            id: logMessageId,
+            role: "assistant",
+            schema: {
+              ui: parsed.ui,
+              data: parsed.data
+            }
+          };
+          setAllMessages(prev => [...prev, logMessage]);
+          return;
+        }
+      }
+      catch (e) {
+        console.log(e)
+      }
     }
+    else {
+      // If user wants UI
+      if (text.toLowerCase().includes("ui")) {
+        const logMessageId = `uilog-${Date.now()}`;
+        const logMessage: ChatMessage & { active?: boolean; completed?: boolean } = {
+          id: logMessageId,
+          role: "system",
+          parts: [{ type: "text", text: "Generating UI..." }],
+          active: true,
+          completed: false
+        };
+        setAllMessages(prev => [...prev, logMessage]);
+        setIsLoadingUI(true);
+        return;
+      }
 
-    // Default AI response
-    const aiMessage: ChatMessage = {
-      id: `ai-${Date.now()}`,
-      role: "assistant",
-      parts: [{ type: "text", text: "I am here to help you." }]
-    };
-    setAllMessages(prev => [...prev, aiMessage]);
-    onMessageReceived?.(aiMessage);
+
+      if (text.toLowerCase().includes("dash")) {
+        const logMessageId = `uilog-${Date.now()}`;
+        const logMessage: ChatMessage & {} = {
+          id: logMessageId,
+          role: "assistant",
+          schema: {
+            ui: datas.ui,
+            data: datas.data
+          }
+
+        }
+        console.log(logMessage.schema.ui)
+        console.log(logMessage.schema.data)
+        setAllMessages(prev => [...prev, logMessage]);
+      }
+
+      // Default AI response
+      else {
+        const aiMessage: ChatMessage = {
+          id: `ai-${Date.now()}`,
+          role: "assistant",
+          parts: [{ type: "text", text: "I am here to help you." }]
+        };
+        setAllMessages(prev => [...prev, aiMessage]);
+        onMessageReceived?.(aiMessage);
+      }
+    }
   }, [inputValue, onMessageSent, onMessageReceived]);
 
   // Create a memoized handler for each UILogs component
@@ -332,9 +214,9 @@ const ChatRuntime = forwardRef<ChatRuntimeRef, ChatRuntimeProps>(({
   );
 
   return (
-    <SidebarProvider >
-      <AppSidebar />
-      <span className="sm:block md:hidden"><SidebarTrigger /></span>
+    <SidebarProvider id="leftSidebar" defaultOpen={rightSidebarOpen}>
+      <AppSidebar onToggle={() => setRightSidebarOpen(prev => !prev)} />
+      <span className="sm:block md:hidden"><SidebarTrigger onToggle={() => setRightSidebarOpen(prev => !prev)} /></span>
 
       <div className={`flex flex-col w-full h-screen bg-white  ${className}`}>
         <div ref={containerRef} className="flex overflow-y-auto h-screen justify-center">
@@ -356,7 +238,7 @@ const ChatRuntime = forwardRef<ChatRuntimeRef, ChatRuntimeProps>(({
                       isActive={isActive}
                       projectId={projectId}
                       uiId={uiid}
-                      wsUrl = {wsUrl}
+                      wsUrl={wsUrl}
                       onComplete={getUILogsCompleteHandler(msg.id)}
                     />
                   </div>
@@ -371,7 +253,7 @@ const ChatRuntime = forwardRef<ChatRuntimeRef, ChatRuntimeProps>(({
                   currentSchema={msg.schema}
                   schemaData={msg.schema}
                   handlers={handlers}
-                  
+
                 />
               );
             })}
@@ -386,7 +268,7 @@ const ChatRuntime = forwardRef<ChatRuntimeRef, ChatRuntimeProps>(({
           onSend={() => handleSendMessage()}
           onHeightChange={setInputHeight}
           placeholder={placeholder}
-          maxLength={maxLength}
+          // maxLength={maxLength}
           disabled={isLoadingUI}
           enableVoice={true}
           enableAttachments={true}
@@ -395,7 +277,7 @@ const ChatRuntime = forwardRef<ChatRuntimeRef, ChatRuntimeProps>(({
         />
       </div>
 
-      <ProjectSidebar />
+      <ProjectSidebar id="rightSidebar" defaultOpen={rightSidebarOpen} onToggle={() => setRightSidebarOpen(prev => !prev)} />
     </SidebarProvider>
   );
 });

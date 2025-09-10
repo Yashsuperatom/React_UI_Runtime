@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+
+import { useState, } from "react";
 import {
   Sidebar,
   SidebarContent,
@@ -10,28 +11,12 @@ import {
   SidebarMenuButton,
   SidebarTrigger,
   SidebarProvider,
-  useSidebar,
 } from "@/components/ui/sidebar";
 import { Icon } from "@iconify/react";
 
-export function ProjectSidebar() {
+export function ProjectSidebar({ id, defaultOpen, onToggle }: any) {
   const [activeItem, setActiveItem] = useState("/");
-  const { state, toggleSidebar, open } = useSidebar();
-
-  // 🚀 Use a unique storage key for THIS sidebar
-  const storageKey = "state2";
-
-  // Load state from localStorage
-  useEffect(() => {
-    const saved = localStorage.getItem(storageKey);
-    if (saved === "expanded" && state === "collapsed") open;
-    if (saved === "collapsed" && state === "expanded") toggleSidebar();
-  }, []);
-
-  // Save whenever state changes
-  useEffect(() => {
-    localStorage.setItem(storageKey, state);
-  }, [state]);
+  ;
 
   const sidebarItems = [
     { label: "Projects", icon: "mdi:folder", href: "/" },
@@ -48,15 +33,14 @@ export function ProjectSidebar() {
   };
 
   // Load defaultOpen from localStorage (unique to ProjectSidebar)
-  const saved = localStorage.getItem(storageKey);
-  const defaultOpen = saved ? saved === "expanded" : true;
+  
 
   return (
     <div>
       {/* 🚀 Unique provider id */}
-      <SidebarProvider id="project-sidebar" defaultOpen={defaultOpen}>
+      <SidebarProvider id={id} defaultOpen={defaultOpen}>
         <span className="sm:block md:hidden">
-          <SidebarTrigger />
+          <SidebarTrigger onClick={onToggle} />
         </span>
 
         <Sidebar
@@ -68,7 +52,7 @@ export function ProjectSidebar() {
           <SidebarContent>
             <SidebarGroup>
               <div className="flex items-center justify-between">
-                <SidebarTrigger className="hover:bg-transparent focus-visible:ring-0 cursor-pointer z-10 dark:text-white" />
+                <SidebarTrigger onClick={onToggle} className="hover:bg-transparent focus-visible:ring-0 cursor-pointer z-10 dark:text-white" />
                 <SidebarGroupLabel className="flex items-center p-4 h-20">
                   <div className="flex items-center gap-2 text-xl font-semibold text-gray-500 dark:text-gray-400">
                     <Icon icon="qlementine-icons:stars-16" />

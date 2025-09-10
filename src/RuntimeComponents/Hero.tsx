@@ -1,5 +1,8 @@
 import { Icon } from "@iconify/react";
 import MotionWrapper from "./MotionWrapper";
+import { useEffect, useRef, useState } from "react";
+import { ProdWebSocketClient } from "./webSocket";
+import type { ProdUIResponse } from "./webSocket";
 
 interface HeroProps {
   onOptionClick: (value: string) => void;
@@ -11,6 +14,8 @@ type CardProps = {
   color: string;
   onClick: () => void;
 };
+
+
 
 const Card = ({ title, icon, color, onClick }: CardProps) => (
   <div
@@ -35,6 +40,36 @@ const Card = ({ title, icon, color, onClick }: CardProps) => (
 );
 
 const Hero = ({ onOptionClick }: HeroProps) => {
+
+
+  const [data, setData] = useState<any>([])
+
+
+  const url = import.meta.env.VITE_WEBSOCKET_URL;
+  const projectId = import.meta.env.VITE_projectID;
+
+  const wsClientRef = useRef<ProdWebSocketClient | null>(null);
+
+  useEffect(() => {
+    const client = new ProdWebSocketClient(url, projectId);
+    wsClientRef.current = client;
+
+    // Listen for server messages
+    client.onProdUIResponse((res: ProdUIResponse) => {
+      console.log("📩 UI Response:", res);
+
+      // Example: update state based on WS data
+      if (res.data?.cards) {
+        setData(res.data.cards);
+      }
+    });
+
+    return () => {
+      client.disconnect; // cleanup if your client supports it
+    };
+  }, [url, projectId]);
+
+
   const cardsData = [
     { title: "Write copy", icon: "material-symbols:note-alt", color: "#ffd282" },
     { title: "Image generation", icon: "mdi:image-outline", color: "#cce6fd" },
@@ -59,8 +94,8 @@ const Hero = ({ onOptionClick }: HeroProps) => {
         <div className="w-full flex justify-center items-center">
           <div className=" w-full  max-w-xl ">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4">
-              {cardsData.map((card, index) => (
-                <MotionWrapper key={index} from="right" className="group hover:scale-[1.02]">
+              {(data && data.length === "0" ? data : cardsData).map((card: any, i: number) => (
+                <MotionWrapper key={i} from="right" className="group hover:scale-[1.02]">
                   <Card
                     title={card.title}
                     icon={card.icon}
@@ -76,5 +111,4 @@ const Hero = ({ onOptionClick }: HeroProps) => {
     </div>
   );
 };
-
 export default Hero;

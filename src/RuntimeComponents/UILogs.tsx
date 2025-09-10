@@ -306,9 +306,10 @@ const UILogs: React.FC<UILogsProps> = ({
 
     client.connect(uiId, requestId);
 
-    return () => {
-      client.disconnect();
-    };
+  //    return () => {
+  //   client.disconnect();
+  //   wsClientRef.current = null;
+  // };
   }, [isActive, projectId, uiId, wsUrl, requestId, onComplete]);
   // Remove onComplete from deps
 
