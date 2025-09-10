@@ -332,7 +332,7 @@ const ChatRuntime = forwardRef<ChatRuntimeRef, ChatRuntimeProps>(({
   );
 
   return (
-    <SidebarProvider >
+    <SidebarProvider  >
       <AppSidebar />
       <span className="sm:block md:hidden"><SidebarTrigger /></span>
 
